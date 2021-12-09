@@ -1,70 +1,204 @@
-# Getting Started with Create React App
+## React 복습
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+### props
 
-## Available Scripts
+컴포넌트를 불러올 때 key 가 없으면 에러메시지가 뜬다.
+key를 인덱스로 설정했더니, 1부터 인덱스가 매겨졌다.
+key 값을 설정해야 기존 값을 그대로 두고 원하는 곳에 내용을 삽입하거나, 삭제할 수 있다
 
-In the project directory, you can run:
+```
+function ArrList2() {
+  const arr = [
+    {
+      id: 4,
+      num: "1",
+      text: "하나",
+    },
+    {
+      id: 5,
+      num: "2",
+      text: "둘",
+    },
+    {
+      id: 6,
+      num: "3",
+      text: "셋",
+    },
+    {
+      id: 7,
+      num: "4",
+      text: "넷",
+    },
+  ];
+  return (
+    <div>
+      {arr.map((i, index) => (
+        // key 가 없으면 에러메시지가 뜬다.
+        // key를 인덱스로 설정했더니, 1부터 인덱스가 매겨졌다.
+        // key 값을 설정해야 기존 값을 그대로 두고 원하는 곳에 내용을 삽입하거나, 삭제할 수 있다
+        <Num i={i} key={index} />
+      ))}
+    </div>
+  );
+}
 
-### `yarn start`
+function Num({ i }) {
+  return (
+    <div>
+      <b>{i.num}</b>
+      <br />
+      <span>{i.text}</span>
+    </div>
+  );
+}
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+export default ArrList2;
+```
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+### useState
 
-### `yarn test`
+변경될 값을 설정할 때는 useState를 사용하자
+useState 의 변수를 변경할 때 기존 변수값을 변경하면 안된다!
+스프레드 문법을 사용하자
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```
+import React, { useState } from "react";
 
-### `yarn build`
+function Inputs() {
+  const [inputs, setInputs] = useState({
+    id: "",
+    password: "",
+  });
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+  // 비구조화 할당을 통해 값을 추출한다
+  const { id, password } = inputs;
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+  const onChange = (event) => {
+    // 입력될 값(value)과 name을 event.target 에서 추출해 와서
+    const { value, name } = event.target;
+    // 기존의 객체를 수정하면 안된다.
+    // 새로운 객체를 스프레드 문법으로 작성하고,
+    // 변화를 준 것을 갱신될 함수에 넣어줘야 한다.
+    setInputs({
+      // 기존에 있던 input 객체를 복사해서 가져온 뒤
+      ...inputs,
+      // 새로 작성되는 값을 name 키를 가진 value 로 설정한다
+      [name]: value,
+    });
+    // console.log(event.target.value); // 잘 가져오는 지 확인차 콘솔로그
+  };
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+  const onReset = () => {
+    setInputs({
+      name: "",
+      password: "",
+    });
+  };
+  return (
+    <div>
+      <input
+        name="id"
+        placeholder="아이디"
+        // input에 value 가 undefined 일 경우 처리를 해주자.
+        value={id || ""}
+        onChange={onChange}
+      />
+      <input
+        name="password"
+        type="password"
+        placeholder="비밀번호"
+        // input에 value 가 undefined 일 경우 처리를 해주자.
+        value={password || ""}
+        onChange={onChange}
+      />
+      <button onClick={onReset}>초기화</button>
+      <div>
+        <b>아이디 : </b>
+        {id}
+        <br />
+        <b>비밀번호 : </b>
+        {password}
+      </div>
+    </div>
+  );
+}
 
-### `yarn eject`
+export default Inputs;
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+```
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## useRef
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+useRef 로 관리하는 변수는 값이 바뀌어도, 컴포넌트가 리렌더링되지 않는다.
+useRef 로 관리하고 있는 변수는 설정 후 바로 조회할 수 있다!
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+```
+import React, { useRef, useState } from "react";
 
-## Learn More
+function InputsUseRef() {
+  const [inputs, setInputs] = useState({
+    name: "",
+    nickName: "",
+  });
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+  const nameInput = useRef();
+  const nickNameInput = useRef();
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+  const { name, nickName } = inputs;
 
-### Code Splitting
+  const onChange = (event) => {
+    const { value, name } = event.target;
+    setInputs({
+      ...inputs,
+      [name]: value,
+    });
+  };
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+  const onReset = () => {
+    setInputs({
+      name: "",
+      nickName: "",
+    });
+    nameInput.current.focus();
+  };
+  return (
+    <div>
+      <input
+        name="name"
+        placeholder="이름"
+        onChange={onChange}
+        value={name}
+        ref={nameInput}
+      />
+      <input
+        name="nickName"
+        placeholder="별명"
+        onChange={onChange}
+        value={nickName}
+        ref={nickNameInput}
+      />
+      <button onClick={onReset}>초기화</button>
+      <div>
+        <b>값: </b>
+        {name} ({nickName})
+      </div>
+    </div>
+  );
+}
 
-### Analyzing the Bundle Size
+export default InputsUseRef;
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+```
 
-### Making a Progressive Web App
+### 단축 평가 논리 계산법
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `yarn build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+```
+console.log(true && "hello"); // hello
+console.log(false && "hello"); // false
+console.log("hello" && "bye"); // bye
+console.log(null && "hello"); // null
+console.log(undefined && "hello"); // undefined
+console.log("" && "hello"); // ''
+console.log(0 && "hello"); // 0
+console.log(1 && "hello"); // hello
+```
