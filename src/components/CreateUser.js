@@ -1,6 +1,6 @@
 import React from "react";
 
-function CreateUser({ username, christianName, onChange, onCreate }) {
+function CreateUser({ username, christianName, onChange, onCreate, onUpdate }) {
   return (
     <div>
       <input
@@ -18,6 +18,7 @@ function CreateUser({ username, christianName, onChange, onCreate }) {
         value={christianName}
       />
       <button onClick={onCreate}>등록</button>
+      <button onClick={onUpdate}>수정완료</button>
     </div>
   );
 }
