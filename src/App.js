@@ -10,6 +10,7 @@ import ArrList2 from "./개념/배열 렌더링";
 import UserList from "./components/UserList";
 import CreateUser from "./components/CreateUser";
 import UseEffect from "./개념/useEffect";
+import Props from "./개념/props";
 
 function App() {
   // CreateUser 컴포넌트에 필요한 props를 설정하기
@@ -174,6 +175,7 @@ function App() {
       />
 
       <UseEffect />
+      <Props />
     </div>
   );
 }
