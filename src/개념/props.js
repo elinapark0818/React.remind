@@ -5,6 +5,7 @@ const Props = () => {
     color: "steelblue",
     fontWeight: "bold",
   };
+
   return (
     <div style={style}>
       <Children name="Elina" />
