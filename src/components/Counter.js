@@ -16,7 +16,7 @@ function Counter() {
 
   const onDecrease = () => {
     console.log("- 1");
-    setNum((preNum) => preNum - 1);
+    setNum((preNum) => (preNum <= 0 ? 0 : preNum - 1));
   };
   return (
     <div>
